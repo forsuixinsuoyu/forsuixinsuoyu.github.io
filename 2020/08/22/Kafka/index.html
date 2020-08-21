@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Kafka | cheers🍻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文对Kafka相关知识进行了简单地梳理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka">
+<meta property="og:url" content="https://forsuixinsuoyu.github.io/2020/08/22/Kafka/index.html">
+<meta property="og:site_name" content="cheers🍻">
+<meta property="og:description" content="本文对Kafka相关知识进行了简单地梳理。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-21T19:11:31.000Z">
+<meta property="article:modified_time" content="2020-08-21T19:14:27.351Z">
+<meta property="article:author" content="suixin">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="cheers🍻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">cheers🍻</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">categories</a>
+        
+          <a class="main-nav-link" href="/tags">tags</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://forsuixinsuoyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Kafka" class="article article-type-post" itemscope
+  itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/22/Kafka/" class="article-date">
+  <time datetime="2020-08-21T19:11:31.000Z" itemprop="datePublished">2020-08-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/">消息中间件</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Kafka
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      <p>本文对Kafka相关知识进行了简单地梳理。</p>
+<a id="more"></a>
+
+<h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h4><blockquote>
+<p>Kafka是一个分布式消息系统，用于构建实时的数据管道，用于读取流式的数据。</p>
+</blockquote>
+<h4 id="2-流行用例"><a href="#2-流行用例" class="headerlink" title="2. 流行用例"></a>2. 流行用例</h4><ul>
+<li>消息代理：用于数据生成和数据处理的解耦，缓冲未处理的消息，类似消息传递系统RabbitMQ</li>
+<li>跟踪网站活动：将用户操作记录重建为一组实时发布-订阅源，可用于实时处理、监控、或加载到离线数据仓库用于离线处理报告</li>
+<li>采集日志：收集各种服务的日志记录，供各类consumer处理，如Hbase等</li>
+<li>流式处理：通过从kafka中消费原始数据，处理后再转换为新的消息，供进一步的消费，如新闻推荐的应用从订阅源获取文章内容，通过一些内容处理，再发布新的kafka topic中，再进行推荐</li>
+<li>…</li>
+</ul>
+<h4 id="3-原理设计"><a href="#3-原理设计" class="headerlink" title="3. 原理设计"></a>3. 原理设计</h4><p>   抽象来看，可将kafka看作一个消息队列，由producer产生消息，<code>push</code>进入队列，再由consumer <code>pull</code>消息，对消息进行处理。那么，kafka需要解决什么问题呢?</p>
+<ul>
+<li>如何定义消息？对于不同的producer和consumer来说，不同的消息如何区分？</li>
+<li>消息在kafka中如何写入，存储，读取？如何保证高可用，高并发，低延时，高可扩展？</li>
+</ul>
+<p>Kafka采用了分布式的设计，一个Kafka集群可以由多个节点组成，每个节点称为一个broker，节点间的协调调度由zookeeper负责；<br>为了区分不同类型的消息，用topic表示一类消息，一个Kafka集群可以创建多个topic并负责其分发，producer将消息<code>push</code>到特定的topic，consumer则根据topic <code>pull</code>对应类型的消息；<br>每个topic可以划分为多个partition，每个partition是一个有序的队列，所有partition按序拼接起来则是topic的全部信息</p>
+<p>下面将简要介绍其存储、写入、读取。</p>
+<h5 id="3-1-Kafka文件存储"><a href="#3-1-Kafka文件存储" class="headerlink" title="3.1 Kafka文件存储"></a>3.1 Kafka文件存储</h5><p>​    Kafka按topic表示不同类的消息，而topic是按partition分布式存储的。每个partition在一个broker上即是一个目录，可用topic的名字和partition的序号进行命名区分。producer写入topic的消息根据一些负载均衡的策略由系统分发到不同的partition，consumer同样按照一些负载均衡的策略分发到某些partition进行读取消费。通过以partition这种方式对topic进行划分，可以起到两方面的作用：方便扩展，通过控制partition的数量使得Kafka集群适应不同量级的数据量；方便提高并发，以partition为单位进行读写更利于负载均衡。</p>
+<p>​    而partition的存储方式是以segment进行组织的。每个segment大小相等，相当于对partition的进一步拆分，由index文件和data文件两部分组成。index文件记录了每一条消息的偏移，相当于消息内容的映射，data文件包含了消息的数据部分。每写入一条消息，相当于在segment末尾append一条记录，并flush到磁盘，segment到达一定大小，broker再创建一个新的segment。segment按offset定位消息，consumer也按offset读取消息，由于segment是有序的，当consumer按照offset读取时可按照二分查找 快速定位消息。对于producer来说，每条消息都是append在记录末尾的，并不关心offset。</p>
+<p>​    为了保证高可用，每个partition有备份replica的，其数量可根据业务情况进行配置。一个topic将其所有partition分配到不同的broker上，partition的备份也分配到不同broker上，从而保证数据的可靠性。既然涉及到不同的备份，自然引入了不同partition的同步问题。Kafka中将partition和其replica划分为一个leader和其他followers。消息的读写都通过这个 leader进行，由leader负责同步信息到followers。进一步考虑，还需要解决leader所在broker宕机的问题？为了保证leader宕机后，信息不丢失，Kafka维护了一个in-sync replica（ISR）列表，记录了与leader保持高一致性的followers列表，只要ISR中还有一个broker正常工作，就可以替代宕机的leader，称为新的leader。如果ISR中所有节点都宕机了，只能等待第一个ISR中第一个恢复上线的节点成为新的leader，或者选择所有节点中第一个恢复的节点 作为leader，这种情况就无法保证数据不丢失了。ISR列表是动态维护的，如果某个节点落后太多，或是宕机，则会被移出ISR，等到上线后再手动添加到ISR中。</p>
+<p>​    Kafka的消息存在内存中，处理速度非常快，为了保证可靠性，根据设置，消息按策略持久化为本地磁盘，但是如果恰好还没得及flush到磁盘，节点宕机了，还是有数据丢失的可能。</p>
+<h5 id="3-2-producer写入"><a href="#3-2-producer写入" class="headerlink" title="3.2 producer写入"></a>3.2 producer写入</h5><p>​    producer通过topic向消息队列写入消息，那么如何保证写入成功了呢？</p>
+<p>​    producer并不与partition和其所有副本通信，而是先通过partition leader写入，再由leader同步到follower。Kafka提供了三种不同的写入模式。第一种，发送给leader所在broker就结束，这种情况无法保证成功投递；第二种，维护一个希望收到ack的节点序列 ，当leader和所有follower回应ack后，才算投递结束，这种情况高可靠，但性能较差，同时希望收到 ack的节点序列也会根据broker的运行状态移除或添加；第三种，发送给leader，leader所在broker确认后投递结束，由leader异步同步到其他副本</p>
+<h5 id="3-3-consumer读取"><a href="#3-3-consumer读取" class="headerlink" title="3.3 consumer读取"></a>3.3 consumer读取</h5><p>​    consumer以partition为单位根据当前的offset（下一条消息偏移）读取，对于同一类consumer，组织成为consumer group。为了提高并发性能，限制每个partition只能由consumer group中一个consumer读取；如果允许consumer group中多个consumer读取，由于是根据offset读取消息，则会引发互斥问题，采用加锁的方式则降低了性能。一个consumer group会完全消费本topic的所有消息，考虑到负载均衡，将partition按策略均匀分配给group中的consumer，因此，当对partition进行扩展时，分配关系会进行rebalance。当然，一个topic的信息是可以由多个consumer group读取的，由于不同consumer group不同partition之间offset并不相同，因此没有冲突问题。</p>
+<p>​    每个consumer的offset管理，在不同的版本下有不同的方式。一种方式是交给zookeeper管理，由consumer提交给zookeeper；另一种方式Kafka系统中自动创建一个topic，专门用来管理offset的信息。</p>
+<p>​    consumer读取消息需要考虑如何保证消息不重复处理？如何不遗漏消息？</p>
+<p>​    consumer读取消息后，需要更新offset和处理消息两件事，需要考虑到这两个事件异常的情况。Kafka也提供了三种模式。第一种，at most once，consumer <code>fetch</code>消息后，先更新offset，再进行消息处理，这种情况如果消息处理异常，则会造成消息丢失；第二种，at least once，consumer <code>fetch</code>消息后，先进行消息处理，再更新offset，这种情况如果更新offset异常，则会造成消息的重复处理；第三种，exactly once，采用at least once的处理流程，同时额外增加一个已处理消息的最大编号，当更新offset异常时，再次读取到这条消息时，则可根据编号判断是否处理过这条消息。</p>
+<p>以上是对Kafka学习内容的简单整理。</p>
+
+      
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://forsuixinsuoyu.github.io/2020/08/22/Kafka/" data-id="cke4m51c100006gu48y4odur8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+
+    </footer>
+  </div>
+  
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/22/%E7%B4%A2%E5%BC%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">索引</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/">消息中间件</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Index/" rel="tag">Index</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InnoDB/" rel="tag">InnoDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/22/Kafka/">Kafka</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/%E7%B4%A2%E5%BC%95/">索引</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/21/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 suixin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
