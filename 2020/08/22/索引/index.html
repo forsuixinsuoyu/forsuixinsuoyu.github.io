@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>索引 | cheers🍻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文按自己的理解，浅显地、不严谨地对MySQL下InnoDB存储引擎地索引相关知识进行了简单地梳理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="索引">
+<meta property="og:url" content="https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/index.html">
+<meta property="og:site_name" content="cheers🍻">
+<meta property="og:description" content="本文按自己的理解，浅显地、不严谨地对MySQL下InnoDB存储引擎地索引相关知识进行了简单地梳理">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-21T17:39:40.000Z">
+<meta property="article:modified_time" content="2020-08-21T17:48:25.923Z">
+<meta property="article:author" content="suixin">
+<meta property="article:tag" content="InnoDB">
+<meta property="article:tag" content="Index">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="cheers🍻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">cheers🍻</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">categories</a>
+        
+          <a class="main-nav-link" href="/tags">tags</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://forsuixinsuoyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-索引" class="article article-type-post" itemscope
+  itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/22/%E7%B4%A2%E5%BC%95/" class="article-date">
+  <time datetime="2020-08-21T17:39:40.000Z" itemprop="datePublished">2020-08-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      索引
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      <p>本文按自己的理解，浅显地、不严谨地对MySQL下InnoDB存储引擎地索引相关知识进行了简单地梳理</p>
+<a id="more"></a>
+
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><p>索引是提高数据库SELECT操作性能的一种工具。</p>
+<h3 id="2-索引如何提升查询性能"><a href="#2-索引如何提升查询性能" class="headerlink" title="2. 索引如何提升查询性能"></a>2. 索引如何提升查询性能</h3><p>以报表的列为例：</p>
+<table>
+<thead>
+<tr>
+<th>c_id</th>
+<th>c_time</th>
+<th>c_statis_type</th>
+<th>c_from_id</th>
+<th>c_dimension_id</th>
+<th>c_dimension_val</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody></table>
+<p>首先，可以按照查询的思路来思考：</p>
+<ul>
+<li><p>等值查询：比如需要查询2020-07-10这一天的数据，最快的方式是对c_time字段做哈希索引，这样就能够根据“2020-07-10”，在O(1)的时间复杂度找到对应的行数据；</p>
+</li>
+<li><p>范围查询：上述方式的索引是有局限的，如果需要查询2020-07-10这一天之后的数据，那么哈希索引便起不到作用了；如果建立索引将c_time有序组织起来，那么可以想到利用二叉查找树来加快查询速度；然而，二叉查找树在极端情况会退化为链式结构，查找也退化为全表扫描顺序查找；为了使树的结构保持稳定，可以想到使用平衡二叉树，这样查询效率就有了稳定的提升，所带来的缺点是因为树结构的调整牺牲了一定的插入性能；平衡二叉树的查找效率与树的高度相关，为了降低树的高度，可以想到多路平衡查找树，B树的结构使得查询性能进一步提升；B树一个节点包含了多个数据，降低了树的高度，但由于节点除了索引字段，还包含了具体行所在地址信息，而磁盘IO每次是按页的大小读取的，一次性读取更多索引显然查找效率更快，因此引入了B树的变种B+树，B+树非叶子节点只包含冗余的索引，叶子节点包含索引和对应的data信息，同时按照索引以链表结构有序排列，这种结构虽然索引数据有冗余，但能够一次加载更多的索引从而带来效率的提升。</p>
+</li>
+</ul>
+<p>InnoDB存储引擎就是采用B+树这种数据结构来组织索引。</p>
+<p>InnoDB中这种B+树索引结构又可分为：聚集索引和辅助索引</p>
+<ul>
+<li><p>聚集索引：聚集索引将行数据有序组织起来，data部分包含具体的行数据。所有的表有且只有一个聚集索引。通常聚集索引的字段为主键，或是唯一索引，或是一个隐藏的自动生成的内部列；如报表的c_id</p>
+</li>
+<li><p>辅助索引：辅助索引与聚集索引的区别是辅助索引节点的data是聚集索引的索引字段信息，因此聚集索引的字段信息应该选取较短的，以减少数据量。通常，通过辅助索引信息查找到对应的内容，还需要到聚集索引进行查找才能定位到具体的行数据。</p>
+</li>
+</ul>
+<p>辅助索引又可具体分为单列索引、联合索引等</p>
+<ul>
+<li><p>单列索引：如按照c_time建立索引，对经常查询的列建立索引，提升查询效率。</p>
+</li>
+<li><p>联合索引：如按照(c_time, c_statis_type)建立索引。联合索引的查找方式需要符合最左前缀原则。单列索引的存储结构结合上面的B+树比较容易理解，联合索引的存储结构我们可以按字典中单词的排序方式来想。以(c_time, c_statis_type)为例，每个非叶子节点的索引包含c_time,c_statis_type两个字段的信息，首先按照c_time的大小构造树形结构，在c_time相等的索引部分，则按照c_statis_type进行构造。因此，联合索引的存储结构是按照第一个字段的信息有序排列的，在第一个字段相等的部分则是按第二个字段有序排列的。按照字典的排序（每个“字母”就是一个索引列）、电话簿姓名的排序（姓、名分别是索引列）比较容易理解。因此，联合索引的建立需要考虑查询语句使用的字段顺序，最左前缀的规则也就不难理解。</p>
+</li>
+</ul>
+<h3 id="3-索引的设计原则"><a href="#3-索引的设计原则" class="headerlink" title="3. 索引的设计原则"></a>3. 索引的设计原则</h3><p>下面就索引的设计进行简单的总结：</p>
+<ul>
+<li><p>主键作为聚集索引的索引对象，在有多个选择时，选择最常访问的列；作为辅助索引的data，有多个选择时，选择较短的列</p>
+</li>
+<li><p>选择常用的搜索列，比如where子句中的列</p>
+</li>
+<li><p>索引的列重复值越少越好</p>
+</li>
+<li><p>索引的字段不宜过长</p>
+</li>
+<li><p>联合索引需要考虑索引字段的顺序，符合最左前缀可利用联合索引</p>
+</li>
+<li><p>索引不是越多越好，虽然索引能够加快查找速度，但过多的索引使得表的更新修改性能下降；此外，当有多个索引可用时，由于MySQL的优化，可能也只用到最合适的那个</p>
+</li>
+</ul>
+<h3 id="4-SQL优化"><a href="#4-SQL优化" class="headerlink" title="4. SQL优化"></a>4. SQL优化</h3><ul>
+<li>可通过explain分析SQL计划，查看索引使用的情况</li>
+<li>通过慢查询日志定位低效的查询语句</li>
+<li>根据使用场景选择合适的存储引擎</li>
+<li>注意索引失效的情况，比如模糊匹配以匹配符开头，对列的数据进行一些函数转换操作等；此外，由于MySQL的优化，在有的情况下 ，通过索引过滤的行较少，也会放弃使用索引，采用全表扫描</li>
+<li>索引条件下推、覆盖索引等减少回表的方式</li>
+<li>…</li>
+</ul>
+
+      
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/" data-id="cke4lsfcn0002g8u42k2215uj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Index/" rel="tag">Index</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/InnoDB/" rel="tag">InnoDB</a></li></ul>
+
+    </footer>
+  </div>
+  
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/21/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Index/" rel="tag">Index</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InnoDB/" rel="tag">InnoDB</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/22/%E7%B4%A2%E5%BC%95/">索引</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/21/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 suixin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

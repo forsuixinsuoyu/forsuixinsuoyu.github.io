@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>cheers🍻</title>
+  <icon>https://forsuixinsuoyu.github.io/icon.png</icon>
+  
+  <link href="https://forsuixinsuoyu.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://forsuixinsuoyu.github.io/"/>
+  <updated>2020-08-21T17:48:25.923Z</updated>
+  <id>https://forsuixinsuoyu.github.io/</id>
+  
+  <author>
+    <name>suixin</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>索引</title>
+    <link href="https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/"/>
+    <id>https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/</id>
+    <published>2020-08-21T17:39:40.000Z</published>
+    <updated>2020-08-21T17:48:25.923Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文按自己的理解，浅显地、不严谨地对MySQL下InnoDB存储引擎地索引相关知识进行了简单地梳理&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="MySQL" scheme="https://forsuixinsuoyu.github.io/categories/MySQL/"/>
+    
+    
+    <category term="InnoDB" scheme="https://forsuixinsuoyu.github.io/tags/InnoDB/"/>
+    
+    <category term="Index" scheme="https://forsuixinsuoyu.github.io/tags/Index/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://forsuixinsuoyu.github.io/2020/08/21/hello-world/"/>
+    <id>https://forsuixinsuoyu.github.io/2020/08/21/hello-world/</id>
+    <published>2020-08-21T14:38:23.330Z</published>
+    <updated>2020-08-21T15:21:13.019Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+</feed>
