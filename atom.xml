@@ -6,7 +6,7 @@
   <link href="https://forsuixinsuoyu.github.io/atom.xml" rel="self"/>
   
   <link href="https://forsuixinsuoyu.github.io/"/>
-  <updated>2020-08-22T09:15:18.250Z</updated>
+  <updated>2020-09-03T06:13:02.105Z</updated>
   <id>https://forsuixinsuoyu.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kmp</title>
+    <link href="https://forsuixinsuoyu.github.io/2020/08/31/kmp/"/>
+    <id>https://forsuixinsuoyu.github.io/2020/08/31/kmp/</id>
+    <published>2020-08-31T02:33:21.000Z</published>
+    <updated>2020-09-03T06:13:02.105Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。&lt;br&gt;主要参考链接：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/1032665486&quot;&gt;阮行止&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/281346746&quot;&gt;海纳&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="算法" scheme="https://forsuixinsuoyu.github.io/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="刷题" scheme="https://forsuixinsuoyu.github.io/tags/%E5%88%B7%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>yuchi的算法题</title>
@@ -59,7 +81,7 @@
     <link href="https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/"/>
     <id>https://forsuixinsuoyu.github.io/2020/08/22/%E7%B4%A2%E5%BC%95/</id>
     <published>2020-08-21T17:39:40.000Z</published>
-    <updated>2020-08-21T17:48:25.923Z</updated>
+    <updated>2020-09-03T02:12:47.068Z</updated>
     
     
     <summary type="html">&lt;p&gt;本文按自己的理解，浅显地、不严谨地对MySQL下InnoDB存储引擎地索引相关知识进行了简单地梳理&lt;/p&gt;</summary>

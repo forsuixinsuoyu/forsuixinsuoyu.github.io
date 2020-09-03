@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>kmp | cheers🍻</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。主要参考链接： 百度百科 阮行止 海纳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kmp">
+<meta property="og:url" content="https://forsuixinsuoyu.github.io/2020/08/31/kmp/index.html">
+<meta property="og:site_name" content="cheers🍻">
+<meta property="og:description" content="本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。主要参考链接： 百度百科 阮行止 海纳">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//substring_bf.png">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//kmp.png">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//kmp2.png">
+<meta property="article:published_time" content="2020-08-31T02:33:21.000Z">
+<meta property="article:modified_time" content="2020-09-03T06:13:02.105Z">
+<meta property="article:author" content="suixin">
+<meta property="article:tag" content="刷题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://forsuixinsuoyu.github.io/.io//substring_bf.png">
+  
+    <link rel="alternate" href="/atom.xml" title="cheers🍻" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.0.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">cheers🍻</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/categories">categories</a>
+        
+          <a class="main-nav-link" href="/tags">tags</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://forsuixinsuoyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-kmp" class="article article-type-post" itemscope
+  itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/31/kmp/" class="article-date">
+  <time datetime="2020-08-31T02:33:21.000Z" itemprop="datePublished">2020-08-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      kmp
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      <p>本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。<br>主要参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin">百度百科</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21923021/answer/1032665486">阮行止</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21923021/answer/281346746">海纳</a></p>
+<a id="more"></a>
+
+<h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><p>​    KMP是一种改进的字符串匹配算法，是由D.E.Knuth，J.H.Morris和V.R.Pratt提出的，因此简称KMP算法。</p>
+<p>​    对于字符串匹配，更具体地来说，主要是这样一种问题，”字符串P是否是字符串S的子串(substring)？如果是，它出现在S的哪些位置？”  其中S称为主串，P称为模式串。</p>
+<p>​    下面举一个例子：</p>
+<pre><code>主串（S）：&quot;ababababca&quot;
+模式串（P）：&quot;ababc&quot;</code></pre>
+<p>​    判断模式串P是否是主串S的子串，可以直接想到的是暴力算法：</p>
+<p><img src="/.io//substring_bf.png" alt="Brute-Force"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">bruteForce</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt;= s.<span class="built_in">size</span>() - p.<span class="built_in">size</span>(); ++k) &#123;</span><br><span class="line">        i = k; <span class="comment">// 主串s匹配的开始位置</span></span><br><span class="line">        j = <span class="number">0</span>; <span class="comment">// 模式串p重新尝试匹配</span></span><br><span class="line">        <span class="keyword">while</span>(j &lt; p.<span class="built_in">size</span>() &amp;&amp; s[i] == p[j])&#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(j == p.<span class="built_in">size</span>())</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    首先从主串S的第一个字符开始匹配，若匹配失败，则重新从主串S的第二个字符开始匹配，依此挨个匹配，直到匹配成功或到达S的末尾字符。</p>
+<p>​    当然，这种做法还有可优化的空间。比如上面例子第一次匹配失败时，最后一个字符不匹配，但已经匹配的部分<code>&#39;abab&#39;</code>自身的特点能够帮助我们加速匹配。为了方便说明，先解释一些概念：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">如果字符串A和B，存在A&#x3D;BS，其中S是任意的非空字符串，那就称B为A的前缀。例如，”Harry”的前缀包括&#123;”H”, ”Ha”, ”Har”, ”Harr”&#125;，我们把所有前缀组成的集合，称为字符串的前缀集合。同样可以定义后缀A&#x3D;SB， 其中S是任意的非空字符串，那就称B为A的后缀，例如，”Potter”的后缀包括&#123;”otter”, ”tter”, ”ter”, ”er”, ”r”&#125;，然后把所有后缀组成的集合，称为字符串的后缀集合。要注意的是，字符串本身并不是自己的后缀。</span><br><span class="line"></span><br><span class="line">作者：海纳</span><br><span class="line">链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;21923021&#x2F;answer&#x2F;281346746</span><br><span class="line">来源：知乎</span><br><span class="line">著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span><br></pre></td></tr></table></figure>
+
+<p>​    <code>&#39;abab&#39;</code>的前缀和后缀集合中相同的元素最长的是<code>&#39;ab&#39;</code>，这意味着在下一次匹配时，我们可以直接将主串S中已匹配部分<code>&#39;abab&#39;</code>的后缀<code>&#39;ab&#39;</code>和模式串P中<code>&#39;abab&#39;</code>的前缀<code>&#39;ab&#39;</code>直接对齐，开始下一次匹配，从而加速匹配过程。这也是kmp算法的主要思想，将在下一节中进行详细的描述。</p>
+<p><img src="/.io//kmp.png" alt="kmp"></p>
+<h3 id="2-kmp"><a href="#2-kmp" class="headerlink" title="2. kmp"></a>2. kmp</h3><p>​    kmp算法的核心，是一个称之为部分匹配表(Partial Match Table——PMT)的数组。</p>
+<pre><code>**PMT中的值是字符串的前缀集合与后缀集合的交集中最长元素的长度**。</code></pre>
+<p>​    举一个例子进行说明，对于字符串<code>&quot;abababca&quot;</code>，其PMT如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">char:</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">c</th>
+<th align="center">a</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">index:</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">5</td>
+<td align="center">6</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">value:</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+<p>​    比如，<code>index = 2</code>的列表示对于字符串<code>&#39;aba&#39;</code>，其前缀集合和后缀集合的交集中最长元素的长度是1，因此对应的value为1。</p>
+<p>​    如下图所示，借助PMT表中的值，就可以加快匹配了。</p>
+<p><img src="/.io//kmp2.png" alt="kmp2"></p>
+<p>​    具体的做法是主串S的指针<code>i</code>不动，模式串P的指针<code>j</code>调整为<code>PMT[j-1]</code>。</p>
+<p>​    可以看到，指针<code>j</code>的回溯使用的是<code>j-1</code>处的PMT值，为了方便编程，将PMT数组整体向右偏移一位。偏移后的数组称为next数组，在下标0处，设置为-1，便于编程。</p>
+<table>
+<thead>
+<tr>
+<th align="center">char:</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">c</th>
+<th align="center">a</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">index:</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">5</td>
+<td align="center">6</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">pmt:</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">next:</td>
+<td align="center">-1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<p>​    借助于提前计算好的next数组，kmp算法的代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kmp</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; <span class="comment">// 主串S的指针</span></span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>; <span class="comment">// 模式串P的指针</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>((i &lt;= s.<span class="built_in">size</span>() - p.<span class="built_in">size</span>()) &amp;&amp; j &lt; p.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="comment">// j == -1表示指针j回溯到下标0的位置与指针i处的字符比较</span></span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span> || s[i] == p[j]) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// i不变，j回溯到匹配部分前缀的下一位</span></span><br><span class="line">            <span class="comment">// next[j]正好是其下标位置</span></span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (j == p.<span class="built_in">size</span>())</span><br><span class="line">        <span class="comment">// 匹配成功，while循环终止，返回下标位置</span></span><br><span class="line">        <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="comment">// 全部匹配失败，while循环终止，返回-1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    到这里，还有一个重要的问题没有解决，如何计算next数组？</p>
+<p>​    next数组的计算实际上是计算前缀和后缀集合的交集中最长元素的长度。而且，我们可以利用next数组前面下标的结果来避免重复的匹配，跟字符串匹配的过程类似（语言上的描述暂时没有想好，直接贴上代码）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">getNext</span><span class="params">(<span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next;</span><br><span class="line">    next.push_back(<span class="number">-1</span>); <span class="comment">// next[0] = -1</span></span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; <span class="comment">// p.substr(0, i + 1)的后缀末尾指针</span></span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">-1</span>; <span class="comment">// p的前缀末尾指针</span></span><br><span class="line">    <span class="keyword">while</span>(i &lt; p.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span> || p[i] == p[j]) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            next.push_back(j); <span class="comment">// next[i] = next[i - 1] + 1</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            j = next[j]; <span class="comment">// </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://forsuixinsuoyu.github.io/2020/08/31/kmp/" data-id="ckemeqil7000018u4c6g1edqm" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%B7%E9%A2%98/" rel="tag">刷题</a></li></ul>
+
+    </footer>
+  </div>
+  
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/22/yuchi%E7%9A%84%E7%AE%97%E6%B3%95%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">yuchi的算法题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/">消息中间件</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Index/" rel="tag">Index</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InnoDB/" rel="tag">InnoDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%B7%E9%A2%98/" rel="tag">刷题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/31/kmp/">kmp</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/yuchi%E7%9A%84%E7%AE%97%E6%B3%95%E9%A2%98/">yuchi的算法题</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/Kafka/">Kafka</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/%E7%B4%A2%E5%BC%95/">索引</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/21/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 suixin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
