@@ -6,7 +6,7 @@
   <link href="https://forsuixinsuoyu.github.io/atom.xml" rel="self"/>
   
   <link href="https://forsuixinsuoyu.github.io/"/>
-  <updated>2020-09-03T06:35:22.986Z</updated>
+  <updated>2020-09-03T06:42:45.567Z</updated>
   <id>https://forsuixinsuoyu.github.io/</id>
   
   <author>
@@ -21,13 +21,11 @@
     <link href="https://forsuixinsuoyu.github.io/2020/08/31/kmp/"/>
     <id>https://forsuixinsuoyu.github.io/2020/08/31/kmp/</id>
     <published>2020-08-31T02:33:21.000Z</published>
-    <updated>2020-09-03T06:35:22.986Z</updated>
+    <updated>2020-09-03T06:42:45.567Z</updated>
     
     
     <summary type="html">&lt;p&gt;本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。&lt;br&gt;主要参考链接：&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/1032665486&quot;&gt;阮行止&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/281346746&quot;&gt;海纳&lt;/a&gt;&lt;/p&gt;</summary>
+&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/kmp%E7%AE%97%E6%B3%95/10951804?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/1032665486&quot;&gt;阮行止&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://www.zhihu.com/question/21923021/answer/281346746&quot;&gt;海纳&lt;/a&gt;&lt;/p&gt;</summary>
     
     
     
