@@ -14,15 +14,15 @@
 <meta property="og:site_name" content="cheers🍻">
 <meta property="og:description" content="本文借助一些资料，结合自己的理解，简要整理了KMP算法的原理。主要参考链接： 百度百科 阮行止 海纳">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//substring_bf.png">
-<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//kmp.png">
-<meta property="og:image" content="https://forsuixinsuoyu.github.io/.io//kmp2.png">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/2020/08/31/kmp/substring_bf.png">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/2020/08/31/kmp/kmp.png">
+<meta property="og:image" content="https://forsuixinsuoyu.github.io/2020/08/31/kmp/kmp2.png">
 <meta property="article:published_time" content="2020-08-31T02:33:21.000Z">
-<meta property="article:modified_time" content="2020-09-03T06:19:33.021Z">
+<meta property="article:modified_time" content="2020-09-03T06:35:22.986Z">
 <meta property="article:author" content="suixin">
 <meta property="article:tag" content="刷题">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://forsuixinsuoyu.github.io/.io//substring_bf.png">
+<meta name="twitter:image" content="https://forsuixinsuoyu.github.io/2020/08/31/kmp/substring_bf.png">
   
     <link rel="alternate" href="/atom.xml" title="cheers🍻" type="application/atom+xml">
   
@@ -114,7 +114,7 @@
 <pre><code>主串（S）：&quot;ababababca&quot;
 模式串（P）：&quot;ababc&quot;</code></pre>
 <p>​    判断模式串P是否是主串S的子串，可以直接想到的是暴力算法：</p>
-<p><img src="/.io//substring_bf.png" alt="Brute-Force"></p>
+<p><img src="/2020/08/31/kmp/substring_bf.png" alt="Brute-Force"></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">bruteForce</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt;= s.<span class="built_in">size</span>() - p.<span class="built_in">size</span>(); ++k) &#123;</span><br><span class="line">        i = k; <span class="comment">// 主串s匹配的开始位置</span></span><br><span class="line">        j = <span class="number">0</span>; <span class="comment">// 模式串p重新尝试匹配</span></span><br><span class="line">        <span class="keyword">while</span>(j &lt; p.<span class="built_in">size</span>() &amp;&amp; s[i] == p[j])&#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(j == p.<span class="built_in">size</span>())</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>​    首先从主串S的第一个字符开始匹配，若匹配失败，则重新从主串S的第二个字符开始匹配，依此挨个匹配，直到匹配成功或到达S的末尾字符。</p>
@@ -122,7 +122,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">如果字符串A和B，存在A&#x3D;BS，其中S是任意的非空字符串，那就称B为A的前缀。例如，”Harry”的前缀包括&#123;”H”, ”Ha”, ”Har”, ”Harr”&#125;，我们把所有前缀组成的集合，称为字符串的前缀集合。同样可以定义后缀A&#x3D;SB， 其中S是任意的非空字符串，那就称B为A的后缀，例如，”Potter”的后缀包括&#123;”otter”, ”tter”, ”ter”, ”er”, ”r”&#125;，然后把所有后缀组成的集合，称为字符串的后缀集合。要注意的是，字符串本身并不是自己的后缀。</span><br><span class="line"></span><br><span class="line">作者：海纳</span><br><span class="line">链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;21923021&#x2F;answer&#x2F;281346746</span><br><span class="line">来源：知乎</span><br><span class="line">著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</span><br></pre></td></tr></table></figure>
 
 <p>​    <code>&#39;abab&#39;</code>的前缀和后缀集合中相同的元素最长的是<code>&#39;ab&#39;</code>，这意味着在下一次匹配时，我们可以直接将主串S中已匹配部分<code>&#39;abab&#39;</code>的后缀<code>&#39;ab&#39;</code>和模式串P中<code>&#39;abab&#39;</code>的前缀<code>&#39;ab&#39;</code>直接对齐，开始下一次匹配，从而加速匹配过程。这也是kmp算法的主要思想，将在下一节中进行详细的描述。</p>
-<p><img src="/.io//kmp.png" alt="kmp"></p>
+<p><img src="/2020/08/31/kmp/kmp.png" alt="kmp"></p>
 <h3 id="2-kmp"><a href="#2-kmp" class="headerlink" title="2. kmp"></a>2. kmp</h3><p>​    kmp算法的核心，是一个称之为部分匹配表(Partial Match Table——PMT)的数组。</p>
 <pre><code>**PMT中的值是字符串的前缀集合与后缀集合的交集中最长元素的长度**。</code></pre>
 <p>​    举一个例子进行说明，对于字符串<code>&quot;abababca&quot;</code>，其PMT如下表所示：</p>
@@ -165,7 +165,7 @@
 </tbody></table>
 <p>​    比如，<code>index = 2</code>的列表示对于字符串<code>&#39;aba&#39;</code>，其前缀集合和后缀集合的交集中最长元素的长度是1，因此对应的value为1。</p>
 <p>​    如下图所示，借助PMT表中的值，就可以加快匹配了。</p>
-<p><img src="/.io//kmp2.png" alt="kmp2"></p>
+<p><img src="/2020/08/31/kmp/kmp2.png" alt="kmp2"></p>
 <p>​    具体的做法是主串S的指针<code>i</code>不动，模式串P的指针<code>j</code>调整为<code>PMT[j-1]</code>。</p>
 <p>​    可以看到，指针<code>j</code>的回溯使用的是<code>j-1</code>处的PMT值，为了方便编程，将PMT数组整体向右偏移一位。偏移后的数组称为next数组，在下标0处，设置为-1，便于编程。</p>
 <table>
