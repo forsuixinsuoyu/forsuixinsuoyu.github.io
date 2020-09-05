@@ -6,7 +6,7 @@
   <link href="https://forsuixinsuoyu.github.io/atom.xml" rel="self"/>
   
   <link href="https://forsuixinsuoyu.github.io/"/>
-  <updated>2020-09-03T06:51:57.466Z</updated>
+  <updated>2020-09-05T08:46:15.435Z</updated>
   <id>https://forsuixinsuoyu.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>binarySearch</title>
+    <link href="https://forsuixinsuoyu.github.io/2020/09/05/binarySearch/"/>
+    <id>https://forsuixinsuoyu.github.io/2020/09/05/binarySearch/</id>
+    <published>2020-09-05T02:31:29.000Z</published>
+    <updated>2020-09-05T08:46:15.435Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;二分查找的原理很简单，但是在细节部分，比如循环终止条件、区间收缩方式，总是理不清楚。今天看到一篇&lt;a href=&quot;https://www.cnblogs.com/kyoner/p/11080078.html&quot;&gt;文章&lt;/a&gt;，觉得有所启发，特此记录下来。&lt;/p&gt;
+&lt;p&gt;参考链接：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/kyoner/p/11080078.html&quot;&gt;详解二分查找算法&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://www.zhihu.com/question/36132386/answer/530313852&quot;&gt;Jason Li&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://www.cnblogs.com/luoxn28/p/5767571.html&quot;&gt;你真的会写二分查找吗&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="算法" scheme="https://forsuixinsuoyu.github.io/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="刷题" scheme="https://forsuixinsuoyu.github.io/tags/%E5%88%B7%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>kmp</title>
