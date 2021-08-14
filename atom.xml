@@ -6,7 +6,7 @@
   <link href="https://forsuixinsuoyu.github.io/atom.xml" rel="self"/>
   
   <link href="https://forsuixinsuoyu.github.io/"/>
-  <updated>2020-09-11T05:54:18.441Z</updated>
+  <updated>2021-08-14T03:33:50.573Z</updated>
   <id>https://forsuixinsuoyu.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>终端配置</title>
+    <link href="https://forsuixinsuoyu.github.io/2021/08/14/%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE/"/>
+    <id>https://forsuixinsuoyu.github.io/2021/08/14/%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE/</id>
+    <published>2021-08-14T02:14:03.000Z</published>
+    <updated>2021-08-14T03:33:50.573Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;每次新电脑配终端环境时，总是去百度怎么安装，怎么配置，花了很多时间找重复的信息，因此记录下来🙂。&lt;/p&gt;
+&lt;p&gt;参考链接：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://zinglix.xyz/2020/04/18/wsl2-proxy/&quot;&gt;wsl代理设置&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://jyzhangchn.github.io/oh-my-zsh.html&quot;&gt;oh-my-zsh配置&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://vimjc.com/vim-plug.html&quot;&gt;vim配置&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://github.com/gpakosz/.tmux&quot;&gt;tmux配置&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="工具" scheme="https://forsuixinsuoyu.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+    <category term="terminal" scheme="https://forsuixinsuoyu.github.io/tags/terminal/"/>
+    
+  </entry>
   
   <entry>
     <title>排序算法总结</title>
